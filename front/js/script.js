@@ -25,7 +25,7 @@ fetch ("http://localhost:3000/api/products")
         article.append(p);
         p.append(element.description); 
         document.getElementById("items").append(a);
-    }
+    };
 })
 .catch (function (responseError) {
     console.log ('erreur');
