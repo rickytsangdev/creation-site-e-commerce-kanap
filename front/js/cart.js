@@ -272,9 +272,11 @@ document.getElementById('form').addEventListener('submit', function (event){
         fetch (`http://localhost:3000/api/products/order`, options)
        .then (function (response){
         return response.json (); 
-       }).then (function (products){
+       }).then (function (order){
         // récupération de la réponse du serveur
-        let orderId = products.orderId; 
+        let orderId = order.orderId; 
+        localStorage.removeItem('cartStorage');
+
         // // redirection vers page de confirmation
         window.location.href = `./confirmation.html?orderId=${orderId}`; 
        }) 

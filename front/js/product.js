@@ -32,12 +32,6 @@ fetch(`http://localhost:3000/api/products/${id}`)
 // --DÉBUT DE LA MISE EN PLACE DU LOCAL STORAGE-- 
 const addToCart = document.getElementById('addToCart'); 
 
-function orderConfirmation() {
-    if (window.confirm ('Votre Kanap est ajouté au panier !\n Pour consulter votre panier, cliquer sur OK')) {
-        window.location.href = "./cart.html"; 
-    };
-}; 
-
 // Écoute de l'ajout au panier
 addToCart.addEventListener('click', function() {
     let selectedColor = document.querySelector('#colors').value;
@@ -63,22 +57,33 @@ addToCart.addEventListener('click', function() {
             color : document.getElementById('colors').value, 
             quantity : parseInt(document.getElementById('quantity').value), 
         }; 
-        orderConfirmation (); 
     
     // Dans l'initialisation du local storage, condition si : le produit est déjà présent dans le local storage ! 
         if (productInStorage ) {
             let found = false; // 
-
+            
             //avec même id + même couleur 
             for (let i = 0; i < productInStorage.length; i++) {
-                if (productInStorage[i].id == id && productInStorage[i].color == document.getElementById('colors').value) { // incrémentation de la quantité
-                    productInStorage[i].quantity += parseInt(document.getElementById('quantity').value);
+                
+                if (productInStorage[i].id == id && productInStorage[i].color == document.getElementById('colors').value) { 
+                    // Quantité d'ajout de produit maximal de 100   
+                    if ((productInStorage[i].quantity + parseInt(document.getElementById('quantity').value)) <= 100) {
+                        productInStorage[i].quantity += parseInt(document.getElementById('quantity').value);
+                        alert (`${parseInt(document.getElementById('quantity').value)} articles ajoutés à votre panier`); 
+                    } else if (productInStorage[i].quantity == 100) {
+                        alert ('Vous avez atteint la quantité maximale de 100 articles')
+                    }
+                    else {
+                        alert (`La quantité maximale est de 100 articles, Vous avez ${productInStorage[i].quantity} articles, \n Veuillez modifier la quantité.`)
+                    }; 
                     localStorage.setItem('cartStorage', JSON.stringify(productInStorage)); 
                     found = true;  
+                  
                 }; 
             } // Dans l'initialisation du local storage, condition si : le local storage contient des produits mais le produit n'est pas présent ! 
             if (found == false) {
                 productInStorage.push(selectedArticles); // ajout du produit 
+                alert (`${parseInt(document.getElementById('quantity').value)} articles ajoutés à votre panier`); 
                 localStorage.setItem('cartStorage', JSON.stringify(productInStorage));
             }
         } 
@@ -86,6 +91,7 @@ addToCart.addEventListener('click', function() {
         else {
             cart = [ ]; 
             cart.push(selectedArticles); // ajout du produit au tableau
+            alert (`${parseInt(document.getElementById('quantity').value)} articles ajoutés à votre panier`); 
             localStorage.setItem('cartStorage', JSON.stringify(cart));
         }
     }
