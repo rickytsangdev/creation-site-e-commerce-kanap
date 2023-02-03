@@ -1,11 +1,12 @@
-// je récupère les données de l'api via un fetch --> 
+// appel Fetch vers l'API pour les produits 
 fetch ("http://localhost:3000/api/products")
 .then (function (response) {
     return response.json ();
 })
+// retour des données
 .then (function (data) {
-    console.log (data);
-    // let html = ""; 
+    
+    // affichage des données dans le DOM pour chaque élément
     for (let i = 0; i < data.length; i++) {
         const element = data[i];
         const a = document.createElement ("a"); 
@@ -28,6 +29,6 @@ fetch ("http://localhost:3000/api/products")
     };
 })
 .catch (function (responseError) {
-    console.log ('erreur');
+    responseError; 
 });
 

@@ -1,11 +1,11 @@
 //  Récupération de l'id dans l'URL
 const queryParams = window.location.href;
 
-// extraire l'id methode URLsearchParams
+// extraction de l'id
 var url = new URL(queryParams);
 var id = url.searchParams.get("id");
 
-//faire un fetch sur la bonne route 
+// Appel Fetch vers l'API pour l'identifiant du produit
 fetch(`http://localhost:3000/api/products/${id}`)
 .then(function(response){
     return response.json ();
@@ -26,65 +26,69 @@ fetch(`http://localhost:3000/api/products/${id}`)
         option.innerText = product.colors[i];
     };
 }).catch(function(error){
-    console.log('Error')
+    error
 });
 
-// -- Mise en place du panier local storage --
-
-// Ecoute du panier on click
-
+// --DÉBUT DE LA MISE EN PLACE DU LOCAL STORAGE-- 
 const addToCart = document.getElementById('addToCart'); 
+
+function orderConfirmation() {
+    if (window.confirm ('Votre Kanap est ajouté au panier !\n Pour consulter votre panier, cliquer sur OK')) {
+        window.location.href = "./cart.html"; 
+    };
+}; 
+
+// Écoute de l'ajout au panier
 addToCart.addEventListener('click', function() {
     let selectedColor = document.querySelector('#colors').value;
     let seletedNumberOfArticles = document.querySelector('#quantity').value;
-    console.log (selectedColor);
-    console.log(typeof(selectedColor)); 
-    console.log (seletedNumberOfArticles);   
-
-    // si la couleur du produit n'a pas été selectionné ou que le nombre d'article n'est pas compris entre 1 et 100, l'ajout au panier ne peut pas être envoyé au local storage. 
+ 
+    // Condition si : la couleur du produit n'a pas été selectionné, le nombre d'article n'est pas compris entre 1 et 100; l'ajout au panier n'est pas valide !
     if (selectedColor === "") {
+        // affichage d'un message d'erreur
         alert ('veuillez sélectionner une couleur')
     } 
     else if (seletedNumberOfArticles <= 0 || seletedNumberOfArticles > 100) {
+        // affichage d'un message d'erreur
         alert ('veuillez sélectionner une quantité entre 1 et 100')
     }
-    else {      
+    else {
+        // Condition sinon : Initialisation du local storage !     
         let productInStorage = JSON.parse(localStorage.getItem('cartStorage'));
 
-        let cart = [ ]; // création de l'array panier
+        let cart = [ ]; // création d'un tableau panier
     
-        let selectedArticles = {  // création des options utilisateur
+        let selectedArticles = {  
             id : id, 
             color : document.getElementById('colors').value, 
             quantity : parseInt(document.getElementById('quantity').value), 
         }; 
-        
-        alert ('Kanap ajouté au panier !');
-        console.log('je suis ici'); 
+        orderConfirmation (); 
     
-    // Condition 1 : si le panier storage n'est pas vide
+    // Dans l'initialisation du local storage, condition si : le produit est déjà présent dans le local storage ! 
         if (productInStorage ) {
-    // Parcours de mon panier pour trouver l'élément id et couleur 
-            var found = false; 
+            let found = false; // 
+
+            //avec même id + même couleur 
             for (let i = 0; i < productInStorage.length; i++) {
-                if (productInStorage[i].id == id && productInStorage[i].color == document.getElementById('colors').value) {
+                if (productInStorage[i].id == id && productInStorage[i].color == document.getElementById('colors').value) { // incrémentation de la quantité
                     productInStorage[i].quantity += parseInt(document.getElementById('quantity').value);
                     localStorage.setItem('cartStorage', JSON.stringify(productInStorage)); 
                     found = true;  
                 }; 
-            }
+            } // Dans l'initialisation du local storage, condition si : le local storage contient des produits mais le produit n'est pas présent ! 
             if (found == false) {
-                productInStorage.push(selectedArticles); 
+                productInStorage.push(selectedArticles); // ajout du produit 
                 localStorage.setItem('cartStorage', JSON.stringify(productInStorage));
             }
         } 
-    // condition 2 :  si le panier storage est vide 
+    // Dans initialisation du local storage, condition sinon : le local storage est vide !
         else {
             cart = [ ]; 
-            cart.push(selectedArticles); 
+            cart.push(selectedArticles); // ajout du produit au tableau
             localStorage.setItem('cartStorage', JSON.stringify(cart));
         }
-
     }
 }); 
+// --FIN DE LA MISE EN PLACE DU LOCAL STORAGE--. 
 
