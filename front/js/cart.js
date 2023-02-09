@@ -1,11 +1,11 @@
 // --DÉBUT DE LA MISE EN PLACE DU PANIER--
-// calcul du prix total des produits
+// Calcul du prix total des produits
 async function renderTotalPrice (){
     // déclaration des variables pour y mettre le prix des produits qui y sont présents 
     let totalItemPrice = 0;
     let totalItemQuantity = 0; 
 
-    // récupération des produits du local storage et parcours du tableau
+    // Récupération des produits du local storage et parcours du tableau
     let productInStorage = JSON.parse(localStorage.getItem('cartStorage'));
     for (let i = 0; i < productInStorage.length; i++) {
         product = await fetch (`http://localhost:3000/api/products/${productInStorage[i].id}`)
@@ -26,12 +26,12 @@ async function returnCart () {
     // sélection de l'id pour intégrer les produits à bonne place
     const elementCartItems = document.querySelector ('#cart__items');
 
-    // condition si : le local storage est vide ! 
+    // Le local storage est vide ! 
     if (productInStorage === null || productInStorage == 0) {
         const emptyCart = `<div> Le panier est vide. </div>`;
         elementCartItems.innerHTML = emptyCart;
     } else {
-        // condition sinon : le local storage contient des produits !
+        // Le local storage contient des produits !
         let cartItemsSection = document.querySelector ('#cart__items');
 
         for ( i = 0; i < productInStorage.length; i++) {
@@ -96,13 +96,13 @@ async function returnCart () {
             input.setAttribute ('value',productInStorage[i].quantity);
             divSettingsQuantity.append (input);
 
-            // modification de la quantité
+            // Modification de la quantité
             input.addEventListener ("change", function (event){
                 if (event.target.value <= 0) {
-                    alert( "veuillez insérer un nombre supérieur à 0"); 
+                    alert( "veuillez insérer une quantité supérieur à 0"); 
                     return; 
                 } else if (event.target.value > 100) {
-                    alert( "Veuillez insérer un nombre inférieur à 100"); 
+                    alert( "Veuillez insérer une quantité à 100"); 
                     return; 
                 }; // recherche de l'identifiant et de la couleur du produit
                 let idProduct = input.closest ('.cart__item').dataset.id;
@@ -115,7 +115,7 @@ async function returnCart () {
                     }
                 }; 
                 localStorage.setItem('cartStorage', JSON.stringify(productInStorage));
-                // mise à jour du prix total des produits 
+                // Mise à jour du prix total des produits 
                 renderTotalPrice (); 
             });
 
@@ -129,17 +129,21 @@ async function returnCart () {
             pDelete.textContent = "Supprimer";
             divContentDelete.append(pDelete);
 
-            // suppression d'un produit
+            // Suppression d'un produit
             pDelete.addEventListener('click', function (){  
                 let closestId = pDelete.closest('.cart__item').dataset.id; 
-        
                 let closestColor = pDelete.closest('.cart__item').dataset.color; 
                 let productInStorage = JSON.parse(localStorage.getItem('cartStorage'));
                 if (productInStorage = productInStorage.filter (item => item.id !== closestId && item.color !== closestColor)) {
                     localStorage.setItem('cartStorage', JSON.stringify(productInStorage));
                     pDelete.closest ('.cart__item').remove (); 
-                    // mise à jour du prix total des produits
-                    renderTotalPrice ()
+                    // Mise à jour du prix total des produits
+                    renderTotalPrice (); 
+                    if (productInStorage == 0 || productInStorage == null) {
+                        localStorage.clear('cartStorage'); 
+                        const emptyCart = `<div> Le panier est vide. </div>`;
+                        elementCartItems.innerHTML = emptyCart;
+                    }; 
                 }; 
             });
         }; 
@@ -160,7 +164,7 @@ function firstNameValidated() {
         error.innerHTML = ""; 
         return true;
     } else {
-         //saisie non valide, affichage du message d'erreur
+         //Saisie non valide, affichage du message d'erreur
         error.innerHTML= 'le prénom doit faire plus de 2 caractères';
         return false;  
     }
@@ -175,7 +179,7 @@ function lastNameValidated() {
         error.innerHTML = ""; 
         return true;
     } else {
-        //saisie non valide, affichage du message d'erreur
+        //Saisie non valide, affichage du message d'erreur
         error.innerHTML= 'le nom doit faire plus de 2 caractères';
         return false; 
     };
@@ -219,7 +223,7 @@ function emailValidated() {
     let emailAddressValue = emailAddress.value.trim (); 
     if (emailAddressValue == "") {
         //saisie non valide, affichage du message d'erreur
-        error.innerHTML = "l'adresse e-mail est requise"; 
+        error.innerHTML = "l'adresse e-mail est requise et obligatoire !"; 
         return false;
     } else if (!regEmail.test (emailAddressValue)) {
          //saisie non valide, affichage du message d'erreur
@@ -233,16 +237,16 @@ function emailValidated() {
 // Passage de la commande
 document.getElementById('form').addEventListener('submit', function (event){
     event.preventDefault (); 
-    // condition si : le formulaire est entièrement valide !
+    // Le formulaire est entièrement valide !
     if (firstNameValidated() &&  lastNameValidated() && addressValidated() && cityValidated() &&  emailValidated()) {
-        // envoie des données du formulaire au back-end
+        // Envoie des données du formulaire au back-end
         let firstNameEntry = document.getElementById('firstName').value;
         let lastNameEntry = document.getElementById('lastName').value;
         let addressEntry = document.getElementById('address').value;
         let cityEntry = document.getElementById('city').value; 
         let emailEntry = document.getElementById('email').value; 
 
-        // création de l'objet conforme au back-end
+        // Création de l'objet conforme au back-end
         let products = [ ]; // nouveau tableau de product_id
         let productInStorage = JSON.parse(localStorage.getItem('cartStorage'));
         for (let i = 0; i < productInStorage.length; i++) {
@@ -260,7 +264,7 @@ document.getElementById('form').addEventListener('submit', function (event){
            products, 
         }; 
 
-        // création de l'option
+        // Création de l'option
         let options  =  {
             method: 'POST', 
             headers : {
@@ -273,11 +277,11 @@ document.getElementById('form').addEventListener('submit', function (event){
        .then (function (response){
         return response.json (); 
        }).then (function (order){
-        // récupération de la réponse du serveur
+        // Récupération de la réponse du serveur
         let orderId = order.orderId; 
         localStorage.removeItem('cartStorage');
 
-        // // redirection vers page de confirmation
+        // // Redirection vers page de confirmation
         window.location.href = `./confirmation.html?orderId=${orderId}`; 
        }) 
     }

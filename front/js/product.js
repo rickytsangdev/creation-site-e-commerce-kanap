@@ -40,11 +40,11 @@ addToCart.addEventListener('click', function() {
     // Condition si : la couleur du produit n'a pas été selectionné, le nombre d'article n'est pas compris entre 1 et 100; l'ajout au panier n'est pas valide !
     if (selectedColor === "") {
         // affichage d'un message d'erreur
-        alert ('veuillez sélectionner une couleur')
+        alert ('Veuillez sélectionner une couleur.')
     } 
     else if (seletedNumberOfArticles <= 0 || seletedNumberOfArticles > 100) {
         // affichage d'un message d'erreur
-        alert ('veuillez sélectionner une quantité entre 1 et 100')
+        alert ('Veuillez choisir une quantité d\'article(s) compris entre 1 et 100.')
     }
     else {
         // Condition sinon : Initialisation du local storage !     
@@ -69,12 +69,12 @@ addToCart.addEventListener('click', function() {
                     // Quantité d'ajout de produit maximal de 100   
                     if ((productInStorage[i].quantity + parseInt(document.getElementById('quantity').value)) <= 100) {
                         productInStorage[i].quantity += parseInt(document.getElementById('quantity').value);
-                        alert (`${parseInt(document.getElementById('quantity').value)} articles ajoutés à votre panier`); 
+                        alert (`${parseInt(document.getElementById('quantity').value)} articles ajoutés à votre panier.`); 
                     } else if (productInStorage[i].quantity == 100) {
-                        alert ('Vous avez atteint la quantité maximale de 100 articles')
+                        alert ('Vous avez atteint la quantité maximale de 100 articles.')
                     }
                     else {
-                        alert (`La quantité maximale est de 100 articles, Vous avez ${productInStorage[i].quantity} articles, \n Veuillez modifier la quantité.`)
+                        alert (`La quantité maximale est de 100, Vous avez ${productInStorage[i].quantity} articles au panier, \n Veuillez modifier la quantité.`)
                     }; 
                     localStorage.setItem('cartStorage', JSON.stringify(productInStorage)); 
                     found = true;  
@@ -83,7 +83,7 @@ addToCart.addEventListener('click', function() {
             } // Dans l'initialisation du local storage, condition si : le local storage contient des produits mais le produit n'est pas présent ! 
             if (found == false) {
                 productInStorage.push(selectedArticles); // ajout du produit 
-                alert (`${parseInt(document.getElementById('quantity').value)} articles ajoutés à votre panier`); 
+                alert (`${parseInt(document.getElementById('quantity').value)} articles ajoutés à votre panier.`); 
                 localStorage.setItem('cartStorage', JSON.stringify(productInStorage));
             }
         } 
@@ -91,7 +91,7 @@ addToCart.addEventListener('click', function() {
         else {
             cart = [ ]; 
             cart.push(selectedArticles); // ajout du produit au tableau
-            alert (`${parseInt(document.getElementById('quantity').value)} articles ajoutés à votre panier`); 
+            alert (`${parseInt(document.getElementById('quantity').value)} articles ajoutés à votre panier.`); 
             localStorage.setItem('cartStorage', JSON.stringify(cart));
         }
     }
