@@ -155,33 +155,37 @@ async function returnCart () {
 
 // --MISE EN PLACE DU FORMULAIRE DE CONTACT--
 // Vérification de la saisie du prénom
+// Déclaration des REGEX 
+const regName = /^[A-Za-zÀ-ú,-]{3,20}$/;
+const regAddress = /^[A-Za-z0-9\s,-]{5,50}$/; 
+const regCity = /^[A-Za-zÀ-ú\s,-]{3,20}$/;
+const regEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
 function firstNameValidated() {
     let error = document.getElementById('firstNameErrorMsg'); 
     let firstName = document.getElementById('firstName'); 
     let firstNameValue = firstName.value.trim (); 
     
-    if (firstNameValue.length > 2 ) {
-        error.innerHTML = ""; 
-        return true;
-    } else {
-         //Saisie non valide, affichage du message d'erreur
-        error.innerHTML= 'le prénom doit faire plus de 2 caractères';
+    if (!regName.test (firstNameValue)) {
+        error.innerHTML= 'Le prénom saisie n\'est pas valide';
         return false;  
-    }
-}
+    } else {
+        error.innerHTML = ""; 
+        return true; 
+    }; 
+}; 
 // Vérification de la saisie du nom
 function lastNameValidated() {
     let error = document.getElementById('lastNameErrorMsg'); 
     let lastName = document.getElementById('lastName'); 
     let lastNameValue = lastName.value.trim(); 
    
-    if (lastNameValue.length > 2 ) {
-        error.innerHTML = ""; 
-        return true;
+    if (!regName.test (lastNameValue)) {
+        error.innerHTML = "le nom saisie n\'est pas valide"; 
+        return false;
     } else {
-        //Saisie non valide, affichage du message d'erreur
-        error.innerHTML= 'le nom doit faire plus de 2 caractères';
-        return false; 
+        error.innerHTML= '';
+        return true; 
     };
 };
 // Vérification de la saisie de l'adresse
@@ -190,13 +194,13 @@ function addressValidated() {
     let address = document.getElementById('address'); 
     let addressValue = address.value.trim(); 
    
-    if (addressValue.length > 2 ) {
-        error.innerHTML = ""; 
-        return true;
+    if (!regAddress.test(addressValue)) {
+        error.innerHTML = "l'adresse saisie n'est pas valide"; 
+        return false;
     } else {
         //saisie non valide, affichage du message d'erreur
-        error.innerHTML= 'l\'adresse doit faire plus de 2 caractères'; 
-        return false;
+        error.innerHTML= ''; 
+        return true;
     };
 }; 
 // Vérification de la saisie de la ville
@@ -205,25 +209,23 @@ function cityValidated() {
     let city = document.getElementById('city'); 
     let cityValue = city.value.trim(); 
    
-    if (cityValue.length > 2 ) {
-        error.innerHTML = ""; 
-        return true;
-    } else {
-        //saisie non valide, affichage du message d'erreur
-        error.innerHTML= 'le nom de la ville doit faire plus de 2 caractères'; 
+    if (!regCity.test (cityValue)) {
+        error.innerHTML = "Le nom de la ville n\'est pas pas valide"; 
         return false;
+    } else {
+        error.innerHTML= ""; 
+        return true;
     }
 }; 
 // Vérification de la saisie de l'email avec REGEX
 function emailValidated() {
-    const regEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
     let error = document.getElementById('emailErrorMsg'); 
     let emailAddress = document.getElementById('email'); 
     let emailAddressValue = emailAddress.value.trim (); 
     if (emailAddressValue == "") {
         //saisie non valide, affichage du message d'erreur
-        error.innerHTML = "l'adresse e-mail est requise et obligatoire !"; 
+        error.innerHTML = "l'adresse e-mail est requise !"; 
         return false;
     } else if (!regEmail.test (emailAddressValue)) {
          //saisie non valide, affichage du message d'erreur
@@ -238,6 +240,7 @@ function emailValidated() {
 document.getElementById('form').addEventListener('submit', function (event){
     event.preventDefault (); 
     // Le formulaire est entièrement valide !
+    console.log (firstNameValidated(), lastNameValidated (), addressValidated(), cityValidated(), emailValidated ())
     if (firstNameValidated() &&  lastNameValidated() && addressValidated() && cityValidated() &&  emailValidated()) {
         // Envoie des données du formulaire au back-end
         let firstNameEntry = document.getElementById('firstName').value;
